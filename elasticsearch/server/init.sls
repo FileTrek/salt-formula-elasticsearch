@@ -6,9 +6,32 @@ include:
   - elasticsearch.server.curator
 {%- endif %}
 
+{% if server.package_file is defined %}
+
+{% set es_package_temp_file = '/tmp/' ~ server.package_file %}
+{% set base_url = 'https://artifacts.elastic.co/downloads/elasticsearch' %}
+
+elasticsearch-package-file:
+  file.managed:
+    - name: {{ es_package_temp_file }}
+    - source: {{ base_url ~ '/' ~ server.package_file }}
+    - source_hash: {{ base_url ~ '/' ~ server.package_file ~ '.sha512' }}
+
+{% endif %} # server.package_file
+
+# TODO: support a list of package files to download
+# TODO: Allow the download URL to be overridden.
+
 elasticsearch_packages:
   pkg.installed:
+{% if server.package_file is defined %}
+    - sources:
+      - elasticsearch: {{ es_package_temp_file }}
+    - require:
+      - elasticsearch-package-file
+{% else %}
   - names: {{ server.pkgs }}
+{% endif %}
 
 elasticsearch_default:
   file.managed:

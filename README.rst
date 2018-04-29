@@ -58,6 +58,23 @@ Cluster with manually defined members:
           shards: 5
           replicas: 1
 
+The formulas assume that the package `elasticsearch` is available through the
+package management system. If it isn't then you can include a `package_file`
+setting to indicate that the RPM should be downloaded. For example:
+
+.. code-block:: yaml
+
+    elasticsearch:
+      server:
+        package_file: elasticsearch-5.6.9.rpm
+        enabled: true
+        ...
+
+This will cause the named package to be downloaded from Elastic's repository
+and installed. To find the package name look on Elastic's download page
+(<https://www.elastic.co/downloads/elasticsearch>) or the past releases page
+(<https://www.elastic.co/downloads/past-releases>).
+
 Common definition for curator:
 
 .. code-block:: yaml
